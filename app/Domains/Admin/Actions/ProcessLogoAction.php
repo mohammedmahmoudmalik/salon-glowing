@@ -18,7 +18,7 @@ class ProcessLogoAction
     public function execute(UploadedFile $file, ?string $oldPath = null): string
     {
         if ($oldPath) {
-            Storage::disk('public')->delete($oldPath);
+            Storage::disk(config('filesystems.default'))->delete($oldPath);
         }
 
         $mime = $file->getMimeType();
@@ -50,7 +50,7 @@ class ProcessLogoAction
         $filename = 'logo_'.Str::random(12).'.png';
         $path = 'logos/'.$filename;
 
-        Storage::disk('public')->put($path, (string) $encoded);
+        Storage::disk(config('filesystems.default'))->put($path, (string) $encoded);
 
         return $path;
     }
@@ -59,7 +59,7 @@ class ProcessLogoAction
     {
         $filename = 'logo_'.Str::random(12).'.'.$ext;
         $path = 'logos/'.$filename;
-        Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+        Storage::disk(config('filesystems.default'))->put($path, file_get_contents($file->getPathname()));
 
         return $path;
     }

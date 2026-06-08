@@ -188,7 +188,7 @@ class SettingController extends Controller
         $logoPath = Setting::get('site_logo');
 
         if ($logoPath) {
-            Storage::disk('public')->delete($logoPath);
+            Storage::disk(config('filesystems.default'))->delete($logoPath);
             Setting::where('key', 'site_logo')->delete();
             Cache::forget('setting.site_logo');
         }
@@ -283,7 +283,7 @@ class SettingController extends Controller
         $path = Setting::get('tour_video');
 
         if ($path) {
-            Storage::disk('public')->delete($path);
+            Storage::disk(config('filesystems.default'))->delete($path);
             Setting::where('key', 'tour_video')->delete();
             Cache::forget('setting.tour_video');
         }
@@ -316,7 +316,7 @@ class SettingController extends Controller
         $path = Setting::get('owner_video');
 
         if ($path) {
-            Storage::disk('public')->delete($path);
+            Storage::disk(config('filesystems.default'))->delete($path);
             Setting::where('key', 'owner_video')->delete();
             Cache::forget('setting.owner_video');
         }
