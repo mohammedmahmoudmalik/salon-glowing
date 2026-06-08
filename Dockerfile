@@ -13,6 +13,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+RUN { \
+    echo "upload_max_filesize = 200M"; \
+    echo "post_max_size = 210M"; \
+    echo "memory_limit = 256M"; \
+    echo "max_execution_time = 300"; \
+    echo "max_input_time = 300"; \
+} > /usr/local/etc/php/conf.d/uploads.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
