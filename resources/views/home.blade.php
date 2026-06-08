@@ -370,20 +370,24 @@
             e.stopPropagation(); playOwnerManual();
         });
 
-        /* ── Play / pause based on section visibility (fires every time) ── */
-        var storySection = document.querySelector('[data-story-section]');
-        if (storySection && 'IntersectionObserver' in window) {
-            var visibilityIo = new IntersectionObserver(function (entries) {
+        /* ── Play / pause based on the video element's own visibility ── */
+        if ('IntersectionObserver' in window) {
+            var videoIo = new IntersectionObserver(function (entries) {
                 entries.forEach(function (e) {
+                    var vid         = e.target;
+                    var ownerActive = ownerPanel && ownerPanel.classList.contains('story-panel-active');
                     if (e.isIntersecting) {
-                        playActivePanel();
+                        var isTourActive  = (vid === tourVideo)  && !ownerActive;
+                        var isOwnerActive = (vid === ownerVideo) && ownerActive;
+                        if (isTourActive || isOwnerActive) playActivePanel();
                     } else {
-                        if (tourVideo)  tourVideo.pause();
-                        if (ownerVideo) ownerVideo.pause();
+                        vid.pause();
                     }
                 });
-            }, { threshold: 0.2 });
-            visibilityIo.observe(storySection);
+            }, { threshold: 0.4 });
+
+            if (tourVideo)  videoIo.observe(tourVideo);
+            if (ownerVideo) videoIo.observe(ownerVideo);
         }
 
         /* ── Entrance animations ───────────────────────────────────── */
@@ -478,11 +482,9 @@
 
             <div class="text-center mt-10">
                 <a href="{{ route('offers.index') }}"
-                   class="inline-flex items-center gap-2 text-sm text-rose-gold font-medium hover:text-rose-gold-dark tracking-wide">
+                   class="inline-flex items-center gap-2 bg-white border border-rose-gold/30 text-rose-gold font-semibold px-8 py-3 rounded-full hover:bg-rose-gold hover:text-white hover:border-rose-gold text-sm tracking-wide"
+                   style="box-shadow:0 2px 8px color-mix(in srgb,var(--color-rose-gold) 10%,transparent);">
                     {{ __('web.view_all') }}
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
                 </a>
             </div>
         </div>
