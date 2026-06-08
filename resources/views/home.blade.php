@@ -186,7 +186,7 @@
                     <div class="flex-1 text-center lg:text-start">
                         <p class="text-[11px] tracking-[0.25em] uppercase font-medium mb-3 opacity-75"
                            style="color:var(--color-rose-gold);">
-                            {{ __('web.tour_eyebrow') }}
+                            {{ app()->getLocale() === 'ar' ? $tourVideoTabAr : $tourVideoTabEn }}
                         </p>
                         <h3 class="font-bold text-salon-text mb-4 leading-tight"
                             style="font-size:clamp(1.5rem,2.5vw,2.25rem);">
@@ -245,7 +245,7 @@
                     <div class="flex-1 text-center lg:text-start">
                         <p class="text-[11px] tracking-[0.25em] uppercase font-medium mb-3 opacity-75"
                            style="color:var(--color-rose-gold);">
-                            {{ __('web.owner_story_eyebrow') }}
+                            {{ app()->getLocale() === 'ar' ? $ownerVideoTabAr : $ownerVideoTabEn }}
                         </p>
                         <h3 class="font-bold text-salon-text mb-4 leading-tight"
                             style="font-size:clamp(1.5rem,2.5vw,2.25rem);">
