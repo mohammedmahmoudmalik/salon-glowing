@@ -333,8 +333,29 @@
             var ownerActive = ownerPanel && ownerPanel.classList.contains('story-panel-active');
             if (ownerActive) {
                 if (tourVideo) { tourVideo.muted = true; tourVideo.pause(); }
-                dismissOwnerOverlay();
-                playWithSound(ownerVideo);
+                if (!ownerVideo) return;
+                var ov = document.getElementById('owner-video-overlay');
+                var overlayVisible = ov && ov.style.pointerEvents !== 'none';
+                if (overlayVisible) {
+                    /* First autoplay attempt — try with sound; if browser blocks,
+                       keep overlay visible so the user's tap provides the gesture */
+                    ownerVideo.muted = false;
+                    var p = ownerVideo.play();
+                    if (p && p.then) {
+                        p.then(function () {
+                            dismissOwnerOverlay();
+                        }).catch(function () {
+                            ownerVideo.muted = true;
+                            ownerVideo.play().catch(function () {});
+                            /* Overlay stays — user tap will call playOwnerManual */
+                        });
+                    } else {
+                        dismissOwnerOverlay();
+                    }
+                } else {
+                    /* User already interacted; play with sound */
+                    playWithSound(ownerVideo);
+                }
             } else {
                 if (ownerVideo) { ownerVideo.pause(); ownerVideo.muted = true; }
                 playWithSound(tourVideo);
