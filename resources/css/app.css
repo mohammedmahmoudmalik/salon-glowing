@@ -1,0 +1,339 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../../app/Livewire/**/*.php';
+@source '../../app/Http/Controllers/**/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-arabic: 'Tajawal', sans-serif;
+
+    --color-rose-gold:       #B76E79;
+    --color-rose-gold-light: #c98a93;
+    --color-rose-gold-dark:  #9a5a64;
+    --color-soft-pink:       #F2A7BB;
+    --color-soft-pink-light: #f7c8d5;
+    --color-beige:           #F5F0E8;
+    --color-beige-dark:      #E8E0CC;
+    --color-salon-text:      #3d2b2f;
+}
+
+/* ── Arabic font for RTL ─────────────────────────────── */
+[dir='rtl'] {
+    font-family: var(--font-arabic);
+}
+
+/* ── Global transition — luxury-paced ───────────────── */
+*, *::before, *::after {
+    transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+    transition-duration: 250ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Card hover lift ─────────────────────────────────── */
+.card-lift {
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 32px color-mix(in oklab, var(--color-rose-gold) 14%, transparent) !important;
+}
+
+/* ── Nav link underline sweep ────────────────────────── */
+.nav-link {
+    position: relative;
+    padding-bottom: 2px;
+}
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    inset-inline-start: 0;
+    width: 100%;
+    height: 1.5px;
+    background-color: var(--color-rose-gold);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-link:hover::after,
+.nav-link.nav-active::after {
+    transform: scaleX(1);
+}
+
+/* ── Section ornament (decorative divider) ───────────── */
+.section-ornament {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+.section-ornament::before,
+.section-ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to var(--tw-gradient-direction, right), transparent, color-mix(in oklab, var(--color-rose-gold) 25%, transparent), transparent);
+}
+
+/* ── Slot time button active ring ────────────────────── */
+.slot-active {
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-rose-gold);
+}
+
+/* ── Elegant scrollbar for category bar ─────────────── */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ── Input focus ring ────────────────────────────────── */
+.salon-input {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    background: white;
+    outline: none;
+    transition: border-color 250ms ease, box-shadow 250ms ease !important;
+}
+.salon-input:focus {
+    border-color: var(--color-rose-gold);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-rose-gold) 12%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO BACKGROUND CAROUSEL
+   z-order: slides(0) → overlay(1) → decoratives(z-10) → content(z-20)
+   ══════════════════════════════════════════════════════════ */
+
+/* Full-bleed container that sits behind all other hero children */
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+/* Individual slides — each gets a background-image via JS */
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    will-change: opacity;
+    /* Override the 250ms global * transition with the carousel-specific duration */
+    transition: opacity 900ms cubic-bezier(0.4, 0, 0.6, 1) !important;
+}
+
+.hero-slide.hero-slide-active {
+    opacity: 1;
+}
+
+/* Ken Burns — subtle 6% zoom, desktop only, skipped by reduced-motion */
+@media (min-width: 1024px) {
+    .hero-slide.hero-slide-active {
+        animation: heroKenBurns 3800ms ease-out forwards;
+    }
+}
+
+@keyframes heroKenBurns {
+    from { transform: scale(1.00); }
+    to   { transform: scale(1.06); }
+}
+
+/* Gradient overlay — replaces the inline section style gradient.
+   Provides: text contrast + brand pink tint + seamless fade-to-white */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(253, 250, 247, 0.92) 0%,
+            rgba(253, 250, 247, 0.82) 45%,
+            rgba(253, 250, 247, 0.93) 100%
+        ),
+        radial-gradient(ellipse at 70% 50%, color-mix(in oklab, var(--color-soft-pink) 20%, transparent) 0%, transparent 58%),
+        radial-gradient(ellipse at 12% 78%, color-mix(in oklab, var(--color-rose-gold) 10%, transparent) 0%, transparent 52%);
+}
+
+/* Reduced-motion: keep first slide static, skip Ken Burns */
+@media (prefers-reduced-motion: reduce) {
+    .hero-slide,
+    .hero-slide.hero-slide-active {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO ENTRANCE ANIMATIONS
+   GPU-accelerated via transform + opacity only.
+   JS adds animation variant + delay classes on intersection.
+   ══════════════════════════════════════════════════════════ */
+
+@keyframes heroSlideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes heroScaleFade {
+    from { opacity: 0; transform: scale(0.95) translateY(14px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Hidden until IntersectionObserver fires */
+.hero-el {
+    opacity: 0;
+    will-change: opacity, transform;
+}
+
+/* Animation variants — applied by JS alongside .hero-el */
+.hero-el.hero-slide-up   { animation: heroSlideUp   950ms  cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-el.hero-fade-in    { animation: heroFadeIn    700ms  cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-el.hero-scale-fade { animation: heroScaleFade 850ms  cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+/* Stagger delays */
+.hero-el.hero-d1 { animation-delay:  60ms; }
+.hero-el.hero-d2 { animation-delay: 240ms; }
+.hero-el.hero-d3 { animation-delay: 420ms; }
+.hero-el.hero-d4 { animation-delay: 590ms; }
+
+/* Desktop — slower, more dramatic */
+@media (min-width: 1024px) {
+    .hero-el.hero-slide-up   { animation-duration: 1100ms; }
+    .hero-el.hero-fade-in    { animation-duration:  800ms; }
+    .hero-el.hero-scale-fade { animation-duration: 1000ms; }
+    .hero-el.hero-d2 { animation-delay: 280ms; }
+    .hero-el.hero-d3 { animation-delay: 500ms; }
+    .hero-el.hero-d4 { animation-delay: 700ms; }
+}
+
+/* Mobile — snappier */
+@media (max-width: 767px) {
+    .hero-el.hero-slide-up   { animation-duration: 500ms; }
+    .hero-el.hero-fade-in    { animation-duration: 380ms; }
+    .hero-el.hero-scale-fade { animation-duration: 460ms; }
+    .hero-el.hero-d2 { animation-delay: 140ms; }
+    .hero-el.hero-d3 { animation-delay: 250ms; }
+    .hero-el.hero-d4 { animation-delay: 350ms; }
+}
+
+/* Accessibility — honour prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    .hero-el,
+    .hero-el.hero-slide-up,
+    .hero-el.hero-fade-in,
+    .hero-el.hero-scale-fade {
+        opacity: 1 !important;
+        transform: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
+   HERO VIDEO BACKGROUND
+   Sits at z-index 0 inside .hero-bg, behind the overlay (z-1)
+   ══════════════════════════════════════════════════════════ */
+.hero-video-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    pointer-events: none;
+    display: block;
+    transition: none !important;
+}
+
+/* When tour video is active reduce overlay so the video is visible */
+.hero-bg.hero-has-video .hero-overlay {
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(253, 250, 247, 0.48) 0%,
+            rgba(253, 250, 247, 0.28) 45%,
+            rgba(253, 250, 247, 0.58) 100%
+        ),
+        radial-gradient(ellipse at 70% 50%, color-mix(in oklab, var(--color-soft-pink) 12%, transparent) 0%, transparent 58%),
+        radial-gradient(ellipse at 12% 78%, color-mix(in oklab, var(--color-rose-gold) 6%, transparent) 0%, transparent 52%);
+}
+
+/* ── Service card brand shadows ──────────────────────── */
+.service-card-shadow {
+    box-shadow: 0 2px 12px color-mix(in srgb,var(--color-rose-gold) 6%,transparent);
+}
+.service-card-shadow:hover {
+    box-shadow: 0 8px 28px color-mix(in srgb,var(--color-rose-gold) 14%,transparent);
+}
+
+/* ── Hero typography enhancements ────────────────────────── */
+
+/* Fluid font size — avoids layout shift at breakpoints */
+.hero-heading {
+    font-size: clamp(2rem, 4vw + 0.75rem, 3.75rem);
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    /* Depth shadow — improves readability over background images */
+    text-shadow: 0 1px 4px color-mix(in oklab, var(--color-salon-text) 13%, transparent),
+                 0 4px 20px color-mix(in oklab, var(--color-salon-text) 8%, transparent);
+    /* Crisp sub-pixel rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.hero-subtext {
+    font-size: clamp(0.9375rem, 1.2vw + 0.4rem, 1.125rem);
+    line-height: 1.8;
+    text-shadow: 0 1px 6px rgba(253, 250, 247, 0.70);
+}
+[dir='rtl'] .hero-subtext {
+    line-height: 1.9;
+}
+
+/* Primary CTA — pulse glow on hover */
+.hero-cta-primary {
+    position: relative;
+    overflow: hidden;
+    transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 220ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.hero-cta-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0.12);
+    opacity: 0;
+    transition: opacity 220ms ease;
+}
+.hero-cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px color-mix(in oklab, var(--color-rose-gold) 46%, transparent) !important;
+}
+.hero-cta-primary:hover::after {
+    opacity: 1;
+}
+.hero-cta-primary:active {
+    transform: translateY(0);
+}
