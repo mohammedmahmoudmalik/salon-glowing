@@ -21,12 +21,12 @@
             {{-- Image --}}
             <div>
                 @if($offer->image_url)
-                    <div class="rounded-2xl overflow-hidden"
+                    <div class="overflow-hidden rounded-2xl"
                          style="box-shadow:0 8px 32px color-mix(in srgb,var(--color-rose-gold) 14%,transparent);">
                         <img src="{{ $offer->image_url }}"
                              alt="{{ app()->getLocale() === 'ar' ? $offer->title_ar : $offer->title_en }}"
                              loading="lazy"
-                             class="w-full">
+                             class="w-full aspect-video object-cover">
                     </div>
                 @else
                     <div class="w-full aspect-video rounded-2xl flex items-center justify-center"

@@ -24,6 +24,16 @@
                     <input type="text" name="title_en" value="{{ old('title_en', $offer->title_en) }}" required
                            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-gold">
                 </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('web.description_ar') }}</label>
+                    <textarea name="description_ar" rows="3" dir="rtl"
+                              class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-gold resize-none">{{ old('description_ar', $offer->description_ar) }}</textarea>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('web.description_en') }}</label>
+                    <textarea name="description_en" rows="3" dir="ltr"
+                              class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-gold resize-none">{{ old('description_en', $offer->description_en) }}</textarea>
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('web.discount_type') }} *</label>
                     <select name="discount_type" required class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-gold">
