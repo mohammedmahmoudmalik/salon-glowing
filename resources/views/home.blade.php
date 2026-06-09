@@ -219,7 +219,7 @@
                              style="box-shadow:0 16px 48px color-mix(in srgb,var(--color-rose-gold) 14%,transparent);">
                             <video id="owner-video-player"
                                    src="{{ $ownerVideoUrl }}"
-                                   preload="auto" playsinline
+                                   muted preload="auto" playsinline
                                    class="w-full aspect-9/16 object-cover bg-gray-900 block">
                             </video>
                             {{-- Play overlay --}}
@@ -346,8 +346,12 @@
                             dismissOwnerOverlay();
                         }).catch(function () {
                             ownerVideo.muted = true;
-                            ownerVideo.play().catch(function () {});
-                            /* Overlay stays — user tap will call playOwnerManual */
+                            var p2 = ownerVideo.play();
+                            if (p2 && p2.then) {
+                                p2.then(function () { dismissOwnerOverlay(); })
+                                  .catch(function () {});
+                            }
+                            /* If even muted play fails, overlay stays for manual tap */
                         });
                     } else {
                         dismissOwnerOverlay();
