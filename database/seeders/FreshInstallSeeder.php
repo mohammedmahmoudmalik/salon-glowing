@@ -118,7 +118,7 @@ class FreshInstallSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            Setting::updateOrCreate(['key' => $setting['key']], ['value' => $setting['value']]);
+            Setting::firstOrCreate(['key' => $setting['key']], ['value' => $setting['value']]);
         }
     }
 
@@ -135,7 +135,7 @@ class FreshInstallSeeder extends Seeder
         ];
 
         foreach ($socials as $item) {
-            Setting::updateOrCreate(['key' => $item['key']], ['value' => $item['value']]);
+            Setting::firstOrCreate(['key' => $item['key']], ['value' => $item['value']]);
         }
     }
 }

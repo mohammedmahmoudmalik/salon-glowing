@@ -20,12 +20,11 @@
 
                         {{-- Image --}}
                         @if($offer->image_url)
-                            <div class="aspect-video overflow-hidden">
+                            <div>
                                 <img src="{{ $offer->image_url }}"
                                      alt="{{ app()->getLocale() === 'ar' ? $offer->title_ar : $offer->title_en }}"
                                      loading="lazy"
-                                     class="w-full h-full object-cover group-hover:scale-105"
-                                     style="transition:transform 400ms ease;">
+                                     class="w-full">
                             </div>
                         @else
                             <div class="aspect-video flex items-center justify-center"
