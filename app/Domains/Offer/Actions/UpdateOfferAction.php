@@ -3,6 +3,8 @@
 namespace App\Domains\Offer\Actions;
 
 use App\Domains\Offer\Models\Offer;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class UpdateOfferAction
 {
@@ -10,6 +12,15 @@ class UpdateOfferAction
     {
         $serviceIds = array_key_exists('service_ids', $data) ? $data['service_ids'] : null;
         unset($data['service_ids']);
+
+        $disk = config('filesystems.default');
+
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            if ($offer->image && ! str_starts_with($offer->image, 'http')) {
+                Storage::disk($disk)->delete($offer->image);
+            }
+            $data['image'] = $data['image']->store('offers', $disk);
+        }
 
         $offer->update($data);
 

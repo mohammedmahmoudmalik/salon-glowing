@@ -51,11 +51,16 @@ return [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
             'bucket' => env('AWS_BUCKET'),
+            // AWS_URL = public base URL used by Storage::url()
+            // Supabase: https://<project-ref>.supabase.co/storage/v1/object/public/<bucket>
             'url' => env('AWS_URL'),
+            // AWS_ENDPOINT = S3 API endpoint
+            // Supabase: https://<project-ref>.supabase.co/storage/v1/s3
             'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            // Supabase requires path-style endpoints
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
             'throw' => false,
             'report' => false,
         ],

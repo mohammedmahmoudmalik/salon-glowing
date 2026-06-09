@@ -31,7 +31,7 @@
                 <img src="{{ $service->image_url }}"
                      alt="{{ $name }}"
                      loading="lazy"
-                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                     class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full flex items-center justify-center"
                      style="background:linear-gradient(135deg,var(--color-beige) 0%,var(--color-soft-pink-light) 100%);">
