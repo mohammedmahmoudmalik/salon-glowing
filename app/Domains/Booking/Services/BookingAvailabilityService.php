@@ -122,7 +122,7 @@ class BookingAvailabilityService
         }
 
         $slotStart = Carbon::parse($bookingDate.' '.$salonHours['open']);
-        $slotEnd   = Carbon::parse($bookingDate.' '.$salonHours['close']);
+        $slotEnd = Carbon::parse($bookingDate.' '.$salonHours['close']);
 
         $totalDuration = Service::whereIn('id', $serviceIds)->sum('duration_minutes')
             + max(0, count($serviceIds) - 1) * $bufferMinutes;
@@ -136,14 +136,23 @@ class BookingAvailabilityService
 
         $slots = [];
         $current = $slotStart->copy();
+        $now = now();
+        $isToday = $bookingDate === $now->toDateString();
 
         while ($current->copy()->addMinutes($totalDuration)->lte($slotEnd)) {
+            // Skip slots that have already started (or will start within the buffer) for today
+            if ($isToday && $current->lte($now)) {
+                $current->addMinutes(15);
+
+                continue;
+            }
+
             $appointmentEnd = $current->copy()->addMinutes($totalDuration);
             $concurrent = 0;
 
             foreach ($bookings as $booking) {
                 $bStart = Carbon::parse($bookingDate.' '.$booking->start_time);
-                $bEnd   = Carbon::parse($bookingDate.' '.$booking->end_time);
+                $bEnd = Carbon::parse($bookingDate.' '.$booking->end_time);
 
                 if ($appointmentEnd->copy()->addMinutes($bufferMinutes)->gt($bStart) &&
                     $bEnd->copy()->addMinutes($bufferMinutes)->gt($current)) {

@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="__('web.edit')">
+<x-layouts.admin :title="__('web.edit')">
 
     {{-- Page header --}}
     <div class="flex items-center gap-3 mb-6">

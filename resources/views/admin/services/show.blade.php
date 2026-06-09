@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="__('web.service_details')">
+<x-layouts.admin :title="__('web.service_details')">
 
     @php
         $isRtl = app()->getLocale() === 'ar';

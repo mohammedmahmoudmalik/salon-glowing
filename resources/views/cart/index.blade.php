@@ -1,4 +1,4 @@
-﻿<x-layouts.app :title="__('web.cart_title')">
+<x-layouts.app :title="__('web.cart_title')">
 
     {{-- Page banner --}}
     <div class="py-10 text-center border-b border-rose-gold/10"

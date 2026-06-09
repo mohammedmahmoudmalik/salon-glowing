@@ -134,3 +134,11 @@
 - [x] Tab كلمة المالكة: overlay زر تشغيل + صوت فوري عند الضغط
 - [x] تصميم mobile-first: مكدّس على الموبايل، جنبًا إلى جنب على الـ desktop
 - [x] أنيميشن دخول بـ IntersectionObserver على كل العناصر
+
+## إصلاحات Bugs — نموذج الحجز
+- [x] **Bug: `getAvailableSlots` تعرض أوقاتاً ماضية ليوم اليوم** — إضافة فلتر `$isToday && $current->lte($now)` لتخطي الأوقات المنتهية في `BookingAvailabilityService`
+- [x] **تحسين UX: رسالة "لا توجد مواعيد"** — استبدال النص الصغير الرمادي بـ `<div>` بخط واضح وأيقونة تقويم
+- [x] **Bug: تعطل اختيار الموعد + ظهور حقل تاريخ مكرر بعد المواعيد** — السبب الجذري: UTF-8 BOM في بداية `livewire/booking-form.blade.php` يضيف text node قبل عنصر الجذر فيكسر الـ DOM morphing في Livewire 3. الحل: إزالة الـ BOM من كل ملفات Blade (15 ملفاً)، وإعادة الواجهة إلى كود Livewire القياسي (`@if` + `wire:model.live` + `wire:click`) مع `wire:key` على الكتل الشرطية، وإزالة كود الـ debug المؤقت
+
+## إعدادات الصالون
+- [x] **سعة الصالون قابلة للتعديل من لوحة التحكم** — إضافة حقل `salon_capacity` (1-50) مع ملاحظة توضيحية في قسم ساعات العمل بصفحة الإعدادات (`Web\Admin\SettingController` + الواجهة)، وإضافته أيضاً لطبقة الـ API (`UpdateSettingsRequest` + `Admin\SettingController::currentSettings`) — كانت تُعدَّل سابقاً عبر `salon:setup` فقط

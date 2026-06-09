@@ -1,4 +1,4 @@
-﻿<x-layouts.app :title="app()->getLocale() === 'ar' ? $offer->title_ar : $offer->title_en">
+<x-layouts.app :title="app()->getLocale() === 'ar' ? $offer->title_ar : $offer->title_en">
 
     {{-- Breadcrumb --}}
     <div class="border-b border-gray-100/80 bg-white/60">

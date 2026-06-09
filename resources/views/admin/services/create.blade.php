@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="__('web.add_new')">
+<x-layouts.admin :title="__('web.add_new')">
 
     {{-- Page header --}}
     <div class="flex items-center gap-3 mb-6">

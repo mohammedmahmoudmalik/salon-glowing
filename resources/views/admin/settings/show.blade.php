@@ -98,6 +98,18 @@
                         </div>
                     </div>
 
+                    {{-- Salon capacity --}}
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">{{ __('web.salon_capacity') }}</label>
+                        <div class="relative w-36">
+                            <input type="number" name="salon_capacity"
+                                   value="{{ old('salon_capacity', $capacity) }}"
+                                   min="1" max="50"
+                                   class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-gold/20 focus:border-rose-gold transition">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1.5">{{ __('web.salon_capacity_hint') }}</p>
+                    </div>
+
                 </div>
 
                 {{-- Footer --}}

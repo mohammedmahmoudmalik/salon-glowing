@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="__('web.booking_details')">
+<x-layouts.admin :title="__('web.booking_details')">
 
     @php
         $statusColors = [

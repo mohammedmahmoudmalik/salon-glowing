@@ -24,48 +24,49 @@ class SettingController extends Controller
             'working_days' => [0, 1, 2, 3, 4],
         ]);
         $buffer = Setting::get('booking_buffer_minutes', 10);
+        $capacity = Setting::get('salon_capacity', 3);
         $images = HeroImage::orderBy('order')->get();
 
         $ownerVideoPath = Setting::get('owner_video');
-        $tourVideoPath  = Setting::get('tour_video');
-        $logoPath       = Setting::get('site_logo');
-        $salonName      = Setting::get('salon_name', config('app.name'));
-        $salonCountry   = Setting::get('salon_country', 'SA');
+        $tourVideoPath = Setting::get('tour_video');
+        $logoPath = Setting::get('site_logo');
+        $salonName = Setting::get('salon_name', config('app.name'));
+        $salonCountry = Setting::get('salon_country', 'SA');
 
-        $tourVideoTabAr    = Setting::get('tour_video_tab_ar', '');
-        $tourVideoTabEn    = Setting::get('tour_video_tab_en', '');
-        $tourVideoTitleAr  = Setting::get('tour_video_title_ar', '');
-        $tourVideoTitleEn  = Setting::get('tour_video_title_en', '');
-        $tourVideoDescAr   = Setting::get('tour_video_desc_ar', '');
-        $tourVideoDescEn   = Setting::get('tour_video_desc_en', '');
+        $tourVideoTabAr = Setting::get('tour_video_tab_ar', '');
+        $tourVideoTabEn = Setting::get('tour_video_tab_en', '');
+        $tourVideoTitleAr = Setting::get('tour_video_title_ar', '');
+        $tourVideoTitleEn = Setting::get('tour_video_title_en', '');
+        $tourVideoDescAr = Setting::get('tour_video_desc_ar', '');
+        $tourVideoDescEn = Setting::get('tour_video_desc_en', '');
 
-        $ownerVideoTabAr   = Setting::get('owner_video_tab_ar', '');
-        $ownerVideoTabEn   = Setting::get('owner_video_tab_en', '');
+        $ownerVideoTabAr = Setting::get('owner_video_tab_ar', '');
+        $ownerVideoTabEn = Setting::get('owner_video_tab_en', '');
         $ownerVideoTitleAr = Setting::get('owner_video_title_ar', '');
         $ownerVideoTitleEn = Setting::get('owner_video_title_en', '');
-        $ownerVideoDescAr  = Setting::get('owner_video_desc_ar', '');
-        $ownerVideoDescEn  = Setting::get('owner_video_desc_en', '');
+        $ownerVideoDescAr = Setting::get('owner_video_desc_ar', '');
+        $ownerVideoDescEn = Setting::get('owner_video_desc_en', '');
 
         $colors = [
-            'primary_color'          => Setting::get('primary_color',          '#B76E79'),
-            'primary_color_light'    => Setting::get('primary_color_light',    '#c98a93'),
-            'primary_color_dark'     => Setting::get('primary_color_dark',     '#9a5a64'),
-            'soft_pink_color'        => Setting::get('soft_pink_color',        '#F2A7BB'),
-            'soft_pink_light_color'  => Setting::get('soft_pink_light_color',  '#f7c8d5'),
-            'secondary_color'        => Setting::get('secondary_color',        '#F5F0E8'),
-            'secondary_color_dark'   => Setting::get('secondary_color_dark',   '#E8E0CC'),
-            'salon_text_color'       => Setting::get('salon_text_color',       '#3d2b2f'),
+            'primary_color' => Setting::get('primary_color', '#B76E79'),
+            'primary_color_light' => Setting::get('primary_color_light', '#c98a93'),
+            'primary_color_dark' => Setting::get('primary_color_dark', '#9a5a64'),
+            'soft_pink_color' => Setting::get('soft_pink_color', '#F2A7BB'),
+            'soft_pink_light_color' => Setting::get('soft_pink_light_color', '#f7c8d5'),
+            'secondary_color' => Setting::get('secondary_color', '#F5F0E8'),
+            'secondary_color_dark' => Setting::get('secondary_color_dark', '#E8E0CC'),
+            'salon_text_color' => Setting::get('salon_text_color', '#3d2b2f'),
         ];
 
-        $heroTitleAr    = Setting::get('hero_title_ar', '');
-        $heroTitleEn    = Setting::get('hero_title_en', '');
+        $heroTitleAr = Setting::get('hero_title_ar', '');
+        $heroTitleEn = Setting::get('hero_title_en', '');
         $heroSubtitleAr = Setting::get('hero_subtitle_ar', '');
         $heroSubtitleEn = Setting::get('hero_subtitle_en', '');
-        $heroCtaAr      = Setting::get('hero_cta_ar', '');
-        $heroCtaEn      = Setting::get('hero_cta_en', '');
+        $heroCtaAr = Setting::get('hero_cta_ar', '');
+        $heroCtaEn = Setting::get('hero_cta_en', '');
 
         return view('admin.settings.show', compact(
-            'salonHours', 'buffer', 'images',
+            'salonHours', 'buffer', 'capacity', 'images',
             'ownerVideoPath', 'tourVideoPath', 'logoPath', 'salonName', 'salonCountry', 'colors',
             'heroTitleAr', 'heroTitleEn', 'heroSubtitleAr', 'heroSubtitleEn',
             'heroCtaAr', 'heroCtaEn',
@@ -82,6 +83,7 @@ class SettingController extends Controller
             'working_days' => 'required|array',
             'working_days.*' => 'integer|between:0,6',
             'booking_buffer_minutes' => 'required|integer|min:0|max:60',
+            'salon_capacity' => 'required|integer|min:1|max:50',
         ]);
 
         Setting::set('salon_working_hours', [
@@ -91,6 +93,8 @@ class SettingController extends Controller
         ]);
 
         Setting::set('booking_buffer_minutes', (int) $data['booking_buffer_minutes']);
+
+        Setting::set('salon_capacity', (int) $data['salon_capacity']);
 
         activity()->log('settings_updated');
 
@@ -129,16 +133,16 @@ class SettingController extends Controller
         $colorRule = ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'];
 
         $request->validate([
-            'logo'                   => 'nullable|mimes:jpeg,jpg,png,webp,svg|max:2048',
-            'salon_name'             => 'nullable|string|max:100',
-            'primary_color'          => $colorRule,
-            'primary_color_light'    => $colorRule,
-            'primary_color_dark'     => $colorRule,
-            'soft_pink_color'        => $colorRule,
-            'soft_pink_light_color'  => $colorRule,
-            'secondary_color'        => $colorRule,
-            'secondary_color_dark'   => $colorRule,
-            'salon_text_color'       => $colorRule,
+            'logo' => 'nullable|mimes:jpeg,jpg,png,webp,svg|max:2048',
+            'salon_name' => 'nullable|string|max:100',
+            'primary_color' => $colorRule,
+            'primary_color_light' => $colorRule,
+            'primary_color_dark' => $colorRule,
+            'soft_pink_color' => $colorRule,
+            'soft_pink_light_color' => $colorRule,
+            'secondary_color' => $colorRule,
+            'secondary_color_dark' => $colorRule,
+            'salon_text_color' => $colorRule,
         ]);
 
         if ($request->hasFile('logo')) {
@@ -221,12 +225,12 @@ class SettingController extends Controller
     public function updateTourVideoTexts(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'tour_video_tab_ar'   => 'nullable|string|max:60',
-            'tour_video_tab_en'   => 'nullable|string|max:60',
+            'tour_video_tab_ar' => 'nullable|string|max:60',
+            'tour_video_tab_en' => 'nullable|string|max:60',
             'tour_video_title_ar' => 'nullable|string|max:120',
             'tour_video_title_en' => 'nullable|string|max:120',
-            'tour_video_desc_ar'  => 'nullable|string|max:400',
-            'tour_video_desc_en'  => 'nullable|string|max:400',
+            'tour_video_desc_ar' => 'nullable|string|max:400',
+            'tour_video_desc_en' => 'nullable|string|max:400',
         ]);
 
         foreach ($data as $key => $value) {
@@ -242,12 +246,12 @@ class SettingController extends Controller
     public function updateOwnerVideoTexts(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'owner_video_tab_ar'   => 'nullable|string|max:60',
-            'owner_video_tab_en'   => 'nullable|string|max:60',
+            'owner_video_tab_ar' => 'nullable|string|max:60',
+            'owner_video_tab_en' => 'nullable|string|max:60',
             'owner_video_title_ar' => 'nullable|string|max:120',
             'owner_video_title_en' => 'nullable|string|max:120',
-            'owner_video_desc_ar'  => 'nullable|string|max:400',
-            'owner_video_desc_en'  => 'nullable|string|max:400',
+            'owner_video_desc_ar' => 'nullable|string|max:400',
+            'owner_video_desc_en' => 'nullable|string|max:400',
         ]);
 
         foreach ($data as $key => $value) {

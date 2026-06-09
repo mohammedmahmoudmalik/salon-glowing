@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="__('web.admin_dashboard')">
+<x-layouts.admin :title="__('web.admin_dashboard')">
 
     <h1 class="text-2xl font-bold text-gray-800 mb-8">{{ __('web.admin_dashboard') }}</h1>
 

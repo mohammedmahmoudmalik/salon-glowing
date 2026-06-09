@@ -20,6 +20,7 @@ class UpdateSettingsRequest extends FormRequest
             'salon_working_hours.working_days' => 'required_with:salon_working_hours|array',
             'salon_working_hours.working_days.*' => 'integer|between:0,6',
             'booking_buffer_minutes' => 'sometimes|integer|min:0|max:60',
+            'salon_capacity' => 'sometimes|integer|min:1|max:50',
         ];
     }
 }

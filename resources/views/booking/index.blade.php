@@ -1,4 +1,4 @@
-﻿<x-layouts.app :title="__('web.my_bookings_title')">
+<x-layouts.app :title="__('web.my_bookings_title')">
 
     {{-- Page banner --}}
     <div class="py-10 text-center border-b border-rose-gold/10"

@@ -1,4 +1,4 @@
-﻿<div>
+<div>
     {{-- Filters --}}
     <div class="flex gap-2 flex-wrap mb-4">
 

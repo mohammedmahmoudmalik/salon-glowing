@@ -38,6 +38,7 @@ class SettingController extends Controller
         return [
             'salon_working_hours' => Setting::get('salon_working_hours'),
             'booking_buffer_minutes' => Setting::get('booking_buffer_minutes'),
+            'salon_capacity' => Setting::get('salon_capacity', 3),
         ];
     }
 }

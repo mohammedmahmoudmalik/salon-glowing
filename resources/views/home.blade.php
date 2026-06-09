@@ -1,4 +1,4 @@
-﻿<x-layouts.app :title="config('app.name')">
+<x-layouts.app :title="config('app.name')">
 
     {{-- ═══════════════════════════════════════════════════ --}}
     {{-- HERO                                                --}}

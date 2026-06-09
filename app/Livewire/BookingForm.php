@@ -96,11 +96,11 @@ class BookingForm extends Component
         $this->errorMessage = '';
 
         $this->validate([
-            'serviceIds'    => 'required|array|min:1',
-            'serviceIds.*'  => 'exists:services,id',
-            'bookingDate'   => 'required|date|after_or_equal:today',
-            'startTime'     => 'required|string',
-            'notes'         => 'nullable|string|max:500',
+            'serviceIds' => 'required|array|min:1',
+            'serviceIds.*' => 'exists:services,id',
+            'bookingDate' => 'required|date|after_or_equal:today',
+            'startTime' => 'required|string',
+            'notes' => 'nullable|string|max:500',
         ]);
 
         $customer = auth()->user()?->customer;
@@ -113,10 +113,10 @@ class BookingForm extends Component
 
         try {
             app(CreateBookingAction::class)->execute($customer, [
-                'service_ids'  => $this->serviceIds,
+                'service_ids' => $this->serviceIds,
                 'booking_date' => $this->bookingDate,
-                'start_time'   => $this->startTime,
-                'notes'        => $this->notes,
+                'start_time' => $this->startTime,
+                'notes' => $this->notes,
             ]);
 
             app(CartService::class)->clear();

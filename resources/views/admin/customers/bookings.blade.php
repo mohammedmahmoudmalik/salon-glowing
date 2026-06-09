@@ -1,4 +1,4 @@
-﻿<x-layouts.admin :title="$customer->user->name">
+<x-layouts.admin :title="$customer->user->name">
     <div class="flex items-center gap-3 mb-6">
         <a href="{{ route('admin.customers.index') }}"
            class="text-gray-400 hover:text-rose-gold text-sm">
