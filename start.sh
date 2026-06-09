@@ -22,5 +22,6 @@ else
         fi
     fi
 fi
+php artisan services:assign-images --use-urls || true
 echo "=== Starting server on port ${PORT} ==="
 exec php artisan serve --host=0.0.0.0 --port=${PORT}

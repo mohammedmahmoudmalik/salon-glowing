@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class AssignServiceImages extends Command
 {
-    protected $signature = 'services:assign-images {--dry-run : Preview without downloading} {--force : Clear existing paths and re-download all images}';
+    protected $signature = 'services:assign-images {--dry-run : Preview without downloading} {--force : Clear existing paths and re-download all images} {--use-urls : Store direct Pexels URLs instead of downloading files}';
 
     protected $description = 'Download and assign Pexels stock images to services and categories that have no image';
 
@@ -45,7 +45,7 @@ class AssignServiceImages extends Command
         'incense_category' => 11434890,
     ];
 
-    // ORDER MATTERS â€” more specific patterns first
+    // ORDER MATTERS â€" more specific patterns first
     private array $serviceImageRules = [
         // ── الحناء بالصبغة ─────────────────────────────────
         'حناء للعروس' => 'henna_mehndi',
@@ -130,6 +130,23 @@ class AssignServiceImages extends Command
         'تضفير' => 'braiding',
         'تركيب شعر خياطه' => 'hair_extensions',
 
+        // ── الرموش ──────────────────────────────────────────
+        'رموش شهرية' => 'eyelash',
+        'رموش اسبوعية' => 'eyelash_tweezer',
+        'رموش كاملة' => 'eyelash',
+        'إزالة رموش' => 'eyelash_tweezer',
+
+        // ── خدمات الشعر (قلوينق) ────────────────────────────
+        'فيلر للشعر' => 'hair_treatment',
+        'صبغة من غير سحب' => 'hair_treatment',
+        'صبغة جذور' => 'hair_treatment',
+        'ديتوكس للفروة' => 'scalp_care',
+        'فرد الشعر' => 'hair_straightening',
+        'حنة قلوينق' => 'hair_mask_henna',
+        'سدر قلوينق' => 'hair_treatment',
+        'جلسة الزيوت' => 'oil_bottle',
+        'إزالة شعر الوجه' => 'waxing',
+
         // ── الحواجب والبشرة ─────────────────────────────────
         'صبغة حواجب' => 'eyebrow_threading',
         'تشقير حواجب' => 'eyebrow_threading',
@@ -183,7 +200,7 @@ class AssignServiceImages extends Command
         'حمام مغربي' => 'hammam',
     ];
 
-    // Category name â†’ photo key
+    // Category name â†' photo key
     private array $categoryImageRules = [
         'الحناء بالصبغة' => 'henna_mehndi',
         'الحناء العادية الحمراء' => 'henna_red',
@@ -199,14 +216,25 @@ class AssignServiceImages extends Command
         'Nail Care' => 'nail_art',
         'Facial & Skin Care' => 'face_mask',
         'Spa & Relaxation' => 'body_massage',
+        'قسم الوجه' => 'eyelash',
+        'قسم الشعر' => 'hair_blowdry',
+        'Face Section' => 'eyelash',
+        'Hair Section' => 'hair_blowdry',
     ];
 
     public function handle(): int
     {
-        $dryRun = $this->option('dry-run');
-        $force  = $this->option('force');
+        $dryRun  = $this->option('dry-run');
+        $force   = $this->option('force');
+        $useUrls = $this->option('use-urls');
 
-        $this->info($dryRun ? 'DRY RUN — no files will be downloaded.' : 'Starting image download and assignment...');
+        if ($dryRun) {
+            $this->info('DRY RUN - no files will be downloaded.');
+        } elseif ($useUrls) {
+            $this->info('Assigning direct Pexels URLs (no download)...');
+        } else {
+            $this->info('Starting image download and assignment...');
+        }
 
         if ($force && ! $dryRun) {
             Service::whereNotNull('image')->where('image', '!=', '')->update(['image' => null]);
@@ -215,7 +243,7 @@ class AssignServiceImages extends Command
         }
 
         $downloaded = [];
-        if (! $dryRun) {
+        if (! $dryRun && ! $useUrls) {
             $downloaded = $this->downloadAllImages();
         }
 
@@ -237,27 +265,36 @@ class AssignServiceImages extends Command
             }
 
             if ($dryRun) {
-                $this->line("  [DRY] {$service->name_ar} â†’ {$photoKey}");
+                $this->line("  [DRY] {$service->name_ar} → {$photoKey}");
                 $assigned++;
 
                 continue;
             }
 
-            $path = $downloaded[$photoKey] ?? null;
-            if (! $path) {
-                $this->error("  Image not downloaded for key: {$photoKey}");
-                $skipped++;
+            if ($useUrls) {
+                $photoId = $this->photoMap[$photoKey] ?? null;
+                if (! $photoId) {
+                    $skipped++;
+                    continue;
+                }
+                $path = "https://images.pexels.com/photos/{$photoId}/pexels-photo-{$photoId}.jpeg?auto=compress&cs=tinysrgb&w=800";
+            } else {
+                $path = $downloaded[$photoKey] ?? null;
+                if (! $path) {
+                    $this->error("  Image not downloaded for key: {$photoKey}");
+                    $skipped++;
 
-                continue;
+                    continue;
+                }
             }
 
             $service->update(['image' => $path]);
-            $this->line("  âœ“ {$service->name_ar}");
+            $this->line("  ✓ {$service->name_ar}");
             $assigned++;
         }
 
-        // â”€â”€ Categories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-        $this->assignCategoryImages($dryRun, $downloaded);
+        // â"€â"€ Categories â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
+        $this->assignCategoryImages($dryRun, $useUrls, $downloaded);
 
         $this->newLine();
         $this->info("Done. Assigned: {$assigned} | Skipped: {$skipped}");
@@ -304,19 +341,19 @@ class AssignServiceImages extends Command
                 if ($response->successful()) {
                     Storage::disk(config('filesystems.default'))->put($filename, $response->body());
                     $paths[$key] = $filename;
-                    $this->info("    âœ“ Saved as {$filename}");
+                    $this->info("    ✓ Saved as {$filename}");
                 } else {
-                    $this->error("    âœ— HTTP {$response->status()} for photo #{$photoId}");
+                    $this->error("    âœ- HTTP {$response->status()} for photo #{$photoId}");
                 }
             } catch (\Exception $e) {
-                $this->error("    âœ— Error: {$e->getMessage()}");
+                $this->error("    âœ- Error: {$e->getMessage()}");
             }
         }
 
         return $paths;
     }
 
-    private function assignCategoryImages(bool $dryRun, array $downloaded): void
+    private function assignCategoryImages(bool $dryRun, bool $useUrls, array $downloaded): void
     {
         $categories = ServiceCategory::where(function ($q) {
             $q->whereNull('image')->orWhere('image', '');
@@ -349,15 +386,23 @@ class AssignServiceImages extends Command
                 continue;
             }
 
-            $path = $downloaded[$key] ?? null;
-            if (! $path) {
-                $this->error("  Image not downloaded for key: {$key}");
+            if ($useUrls) {
+                $photoId = $this->photoMap[$key] ?? null;
+                if (! $photoId) {
+                    continue;
+                }
+                $path = "https://images.pexels.com/photos/{$photoId}/pexels-photo-{$photoId}.jpeg?auto=compress&cs=tinysrgb&w=800";
+            } else {
+                $path = $downloaded[$key] ?? null;
+                if (! $path) {
+                    $this->error("  Image not downloaded for key: {$key}");
 
-                continue;
+                    continue;
+                }
             }
 
             $category->update(['image' => $path]);
-            $this->line("  âœ“ Category: {$category->name_ar}");
+            $this->line("  ✓ Category: {$category->name_ar}");
         }
     }
 }
