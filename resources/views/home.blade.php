@@ -487,6 +487,11 @@
                                 {{ app()->getLocale() === 'ar' ? $offer->title_ar : $offer->title_en }}
                             </h3>
 
+                            @php $desc = app()->getLocale() === 'ar' ? $offer->description_ar : $offer->description_en; @endphp
+                            @if($desc)
+                                <p class="text-[13px] text-gray-500 line-clamp-2 mt-1.5">{{ $desc }}</p>
+                            @endif
+
                             @if($offer->ends_at)
                                 <p class="text-[11px] text-gray-400 mt-2 flex items-center gap-1.5">
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
