@@ -236,7 +236,6 @@ return [
     'description_en' => 'English Description',
     'category' => 'Category',
     'image' => 'Image',
-    'or_upload_file' => 'Or upload a file from your device',
     'is_active' => 'Active',
     'discount_type' => 'Discount Type',
     'discount_value' => 'Discount Value',

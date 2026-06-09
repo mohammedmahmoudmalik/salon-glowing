@@ -38,7 +38,6 @@ class OfferController extends Controller
             'description_ar' => 'nullable|string',
             'description_en' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
-            'image_url' => 'nullable|url|max:2000',
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|numeric|min:0',
             'starts_at' => 'nullable|date',
@@ -47,11 +46,6 @@ class OfferController extends Controller
             'service_ids' => 'nullable|array',
             'service_ids.*' => 'exists:services,id',
         ]);
-
-        if (empty($data['image']) && ! empty($data['image_url'])) {
-            $data['image'] = $data['image_url'];
-        }
-        unset($data['image_url']);
 
         $action->execute($data);
 
@@ -76,7 +70,6 @@ class OfferController extends Controller
             'description_ar' => 'nullable|string',
             'description_en' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
-            'image_url' => 'nullable|url|max:2000',
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|numeric|min:0',
             'starts_at' => 'nullable|date',
@@ -85,11 +78,6 @@ class OfferController extends Controller
             'service_ids' => 'nullable|array',
             'service_ids.*' => 'exists:services,id',
         ]);
-
-        if (empty($data['image']) && ! empty($data['image_url'])) {
-            $data['image'] = $data['image_url'];
-        }
-        unset($data['image_url']);
 
         $action->execute($offer, $data);
 

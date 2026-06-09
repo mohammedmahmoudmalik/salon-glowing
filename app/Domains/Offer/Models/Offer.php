@@ -52,13 +52,6 @@ class Offer extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (! $this->image) {
-            return null;
-        }
-        if (str_starts_with($this->image, 'http')) {
-            return $this->image;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->image);
+        return $this->image ? Storage::disk(config('filesystems.default'))->url($this->image) : null;
     }
 }

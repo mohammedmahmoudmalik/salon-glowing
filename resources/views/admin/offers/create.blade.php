@@ -64,9 +64,6 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('web.image') }}</label>
-                <input type="url" name="image_url" value="{{ old('image_url') }}" placeholder="https://..."
-                       class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-rose-gold mb-2">
-                <p class="text-xs text-gray-400 mb-1">{{ __('web.or_upload_file') }}</p>
                 <input type="file" name="image" accept="image/*" class="text-sm text-gray-500">
             </div>
 

@@ -236,7 +236,6 @@ return [
     'description_en' => 'الوصف بالإنجليزية',
     'category' => 'الفئة',
     'image' => 'الصورة',
-    'or_upload_file' => 'أو ارفع ملفاً من جهازك',
     'is_active' => 'مفعّل',
     'discount_type' => 'نوع الخصم',
     'discount_value' => 'قيمة الخصم',
