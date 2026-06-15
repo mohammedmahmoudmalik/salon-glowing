@@ -99,7 +99,7 @@
                         @foreach($service->offers as $offer)
                             <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                                 <span class="text-sm text-gray-700 font-medium">
-                                    {{ $isRtl ? $offer->name_ar : $offer->name_en }}
+                                    {{ $isRtl ? $offer->title_ar : $offer->title_en }}
                                 </span>
                                 <span class="text-xs font-medium px-2 py-0.5 rounded-full
                                     {{ $offer->is_active ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500' }}">
