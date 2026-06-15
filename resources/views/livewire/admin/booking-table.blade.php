@@ -83,8 +83,8 @@
         ];
     @endphp
 
-    {{-- الجدول --}}
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+    {{-- الجدول (Desktop) --}}
+    <div class="hidden md:block bg-white rounded-2xl shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-beige text-gray-600 text-xs uppercase">
@@ -180,6 +180,82 @@
         </div>
         @if($bookings->hasPages())
             <div class="px-4 py-3 border-t border-gray-50">{{ $bookings->links() }}</div>
+        @endif
+    </div>
+
+    {{-- الجدول (Mobile cards) --}}
+    <div class="md:hidden space-y-3">
+        @forelse($bookings as $booking)
+            @php $statusKey = $booking->status->value; @endphp
+            <div class="bg-white rounded-2xl shadow-sm p-4">
+                {{-- Header: customer + status --}}
+                <div class="flex items-start justify-between gap-2 mb-2">
+                    <div class="min-w-0">
+                        <p class="font-semibold text-gray-800 text-sm truncate">
+                            {{ $booking->customer?->user?->name ?? '—' }}
+                        </p>
+                        @if($booking->customer?->user?->phone)
+                            <p class="text-xs text-gray-400 mt-0.5">{{ $booking->customer->user->phone }}</p>
+                        @endif
+                    </div>
+                    <span class="text-xs px-2 py-1 rounded-full font-medium shrink-0 {{ $statusColors[$statusKey] ?? 'bg-gray-100 text-gray-600' }}">
+                        {{ $statusLabels[$statusKey] ?? $statusKey }}
+                    </span>
+                </div>
+
+                {{-- Details --}}
+                <div class="text-xs text-gray-500 space-y-1.5 mb-3">
+                    <div class="flex justify-between gap-2">
+                        <span class="text-gray-400 shrink-0">{{ __('web.service') }}</span>
+                        <span class="font-medium text-gray-700 text-end">
+                            {{ $booking->items->first()?->service
+                               ? ($locale === 'ar' ? $booking->items->first()->service->name_ar : $booking->items->first()->service->name_en)
+                               : '—' }}
+                            @if($booking->items->count() > 1)
+                                <span class="text-gray-400">+{{ $booking->items->count() - 1 }}</span>
+                            @endif
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">{{ __('web.date') }}</span>
+                        <span class="font-medium text-gray-700">{{ \Carbon\Carbon::parse($booking->booking_date)->format('Y/m/d') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">{{ __('web.time') }}</span>
+                        <span class="font-medium text-gray-700">{{ substr($booking->start_time, 0, 5) }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">{{ __('web.total_price') }}</span>
+                        <span class="font-bold text-rose-gold">{{ number_format($booking->total_price, 0) }} {{ currency() }}</span>
+                    </div>
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex items-center gap-2 flex-wrap pt-2 border-t border-gray-50">
+                    <a href="{{ route('admin.bookings.show', $booking) }}"
+                       class="text-xs px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition">
+                        {{ __('web.view_details') }}
+                    </a>
+                    @if($booking->status->value === 'pending')
+                        <button wire:click="changeStatus({{ $booking->id }}, 'confirmed')"
+                                class="text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition">
+                            {{ __('web.confirm') }}
+                        </button>
+                    @endif
+                    @if(in_array($booking->status->value, ['pending', 'confirmed']))
+                        <button wire:click="changeStatus({{ $booking->id }}, 'cancelled')"
+                                wire:confirm="{{ $locale === 'ar' ? 'هل تريد إلغاء الحجز؟' : 'Cancel this booking?' }}"
+                                class="text-xs bg-red-50 text-red-500 hover:bg-red-100 px-3 py-1.5 rounded-lg transition">
+                            {{ __('web.cancel') }}
+                        </button>
+                    @endif
+                </div>
+            </div>
+        @empty
+            <div class="bg-white rounded-2xl shadow-sm p-8 text-center text-gray-400 text-sm">{{ __('web.no_data') }}</div>
+        @endforelse
+        @if($bookings->hasPages())
+            <div class="bg-white rounded-2xl shadow-sm px-4 py-3">{{ $bookings->links() }}</div>
         @endif
     </div>
 </div>
