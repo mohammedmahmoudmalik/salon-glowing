@@ -30,3 +30,13 @@ offers/*
 !offers/*.jpeg
 !offers/*.png
 !offers/*.webp
+!owner-videos/
+owner-videos/*
+!owner-videos/*.mp4
+!owner-videos/*.mov
+!owner-videos/*.webm
+!tour-videos/
+tour-videos/*
+!tour-videos/*.mp4
+!tour-videos/*.mov
+!tour-videos/*.webm
